@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+	<script type="text/javascript" src="{% static 'logger/dygraph.js' %}"></script>
+	<script type="text/javascript" src="{% static 'logger/logger.js' %}"></script>
+	<script type="text/javascript" src="{% static 'logger/jquery-3.1.1.min.js' %}"></script>
+	<link rel="stylesheet" src="{% static 'logger/dygraph.css' %}" />
+	<style>
+	    header, footer { padding: 1em; color: white; background-color: black; clear: left; text-align: center; }
+	    footer { padding: 1em; color: yellow; 	background-color: red; clear: left; text-align: center; }
+	    nav { float: left; max-width: 160px; margin: 0; 	padding: 1em; }
+	    nav ul { list-style-type: none; padding: 0; 	}			   
+	    nav ul a { text-decoration: none; }
+	    article {border-left: 1px solid gray; padding: 1em; overflow: hidden; }
+	    div.rot_image {float: left; width: 80%; text-align: center; background-color: green;}
+	    div.snapshot {clear: both; text-align: center; background-color: blue; color: white;}
+	    div.rot_list {float: right; width: 20%; text-align: center; background-color: yellow;}
+	    graphdiv .dygraph-legend { width: 100px; background-color: transparent !important; left: -80px !important;}
+	</style>
+    </head>
+
+    <body>
+
+	<header>
+	    <!-- img width="95%" alt="Bator2020" src="{% static 'logger/Bator2020.png' %}"-->
+	    <h1>Bator2020</h1>
+	    {% for inc in batch %}
+    	    <h2>{{inc.name}}</h2>
+    	    <h3>{{inc.start_date}}</h3>
+    	{% endfor %}
+	</header>
+
+		<article>
+		    <div id="graphdiv" style="height: 640px; width: 100%;"></div>
+
+		    <script type="text/javascript">
+			window.data = [];
+            {% if g_data %}
+			    {% for dht in g_data %}							
+			        window.data.push([new Date("{{dht.date_log|date:"D M d Y H:i:s e"}}"), {{dht.temperature}}, {{dht.Humidity}}]);
+			    {% endfor %}
+			{% else %}
+			    {% for rht in rht_data %}
+			        window.data.push([new Date("{{rht.date_log|date:"D M d Y H:i:s e"}}"), {{rht.ktherm_temp}}, {{rht.rh}}, {{rht.inc_temp}}, {{rht.amb_temp}}]);
+			    {% endfor %}
+			{% endif %}
+
+			window.g = new Dygraph(
+			document.getElementById("graphdiv"), window.data,
+			{
+			    legend: 'always',										
+			    //title: 'Temperature and Humidity',
+			    //drawPoints: true,
+			    //showRoller: true,
+			    {% if g_data %}
+			        labels: ['Time', 'Temperature', 'Humidity'],
+    			{% else %}
+    			    labels: ['Time', 'K Temperature', 'Humidity', 'IC Temp', 'Ambient'],    			
+    			{% endif %}
+			    //ylabel: 'Humidity (%) Temperature (F)',				
+			    xlabel: 'Time',
+			    labelsSeparateLines: true,
+			    //showRangeSelector: true
+			}
+			);
+		    </script>
+
+		</article>
+
+		{% if rot %}			
+		<div id="rot" class="rot_image">
+			<h2>Last rotation executed on {{rot.last_rotation}}</h2>
+			<h3>Start of rotation</h3>
+			<img width="95%" alt="First rotation is pending." src="/static{{rot.start_image}}">
+			<h3>End of rotation</h3>
+			<img width="95%" alt="First rotation is pending." src="/static{{rot.end_image}}">
+		</div>
+		{% endif %}
+
+		{% if rot_list %}
+		<div id="rot_list" class="rot_list">
+			<h3>List of past rotations</h3>
+			{% for item in rot_list %}
+			    <a>{{item.last_rotation}}<br>
+			{% endfor %}
+		</div>
+		{% endif %}
+
+	</body>
+</html>

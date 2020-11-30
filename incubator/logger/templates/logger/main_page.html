@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ria's Incubator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{% static 'logger/w3.css' %}" />
+        <link rel="icon" href="{% static 'logger/egg-icon.jpg' %}" type="image/jpg" sizes="16x16">    
+    </head>
+    
+    <body>
+        <header class="w3-container w3-black w3-center">
+            <h2>Welcome to Ria's Incubator</h2>
+        </header>
+        
+        <nav class="w3-bar w3-green">
+            <a href="/active" class="w3-bar-item w3-button" style="width:25%">Active</a>
+            <a href="/past" class="w3-bar-item w3-button" style="width:25%">Pasts</a>
+            <a href="/lucky" class="w3-bar-item w3-button" style="width:25%">Lucky</a>
+            <a href="/miracle" class="w3-bar-item w3-button" style="width:25%">Miracle</a>
+        </nav>
+        
+        <article>
+            <p>My dad and I made an incubator to hatch chicken eggs. Hatching chicken
+            eggs requires the right temperature and humidity. The eggs also need to be
+            rotated. The temperature should remain between 99F-103F. To keep the temperature
+            this high, the incubator must be well insulated. We used thermal insulation and plexi 
+            glass. If it goes higher or 
+            lower for an hour it might decrease hatching rate. If it stays a few degrees
+            higher for hours then it will probably decrease the hatching rate and might make
+            the ones who hatch physically deformed (missing a toe or more than four toes).
+            </p>
+            <p>Our incubator is programmed to switch a light bulb on and off to keep the
+            temperature between 99.5F and 100.5F. Most people say the humidity should be 45% to
+            55% for the first 18 days and 65% for the last 3 days. But a mother hen keeps the
+            humidity at 75% to 80%. Our incubator is programmed to keep the humidity around
+            75% by using a vent controlled by a servo and a humidifier we made.</p>
+            <p>O</p>
+        </article>
+        
+    </body>
+    
+</html>

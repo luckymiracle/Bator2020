@@ -1,0 +1,27 @@
+{% if data %}
+    {{ data }}
+{% endif %}
+~~
+{% if rot %}
+    <h2>Last rotation executed on {{rot.last_rotation}}</h2>
+    <button type="button" onclick="rotate()">Click to rotate eggs</button>
+    <h3>Start of rotation</h3>
+    <img width="95%" src="/static{{rot.start_image}}">
+    <h3>End of rotation</h3>
+    <img width="95%" src="/static{{rot.end_image}}">
+{% endif %}
+~~
+{% if rot_list %}
+    <h3>List of past rotations</h3>
+    {% for item in rot_list %}
+        <a>{{item.last_rotation}}<br>
+    {% endfor %}
+{% endif %}
+~~
+{% if image %}
+    <img src="/static{{image}}">
+{% endif %}
+~~
+{{delta}}
+~~
+{{timer}}

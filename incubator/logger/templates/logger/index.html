@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="{% static 'logger/dygraph.js' %}"></script>
+        <script type="text/javascript" src="{% static 'logger/logger.js' %}"></script>
+        <script type="text/javascript" src="{% static 'logger/jquery-3.1.1.min.js' %}"></script>
+        <link rel="stylesheet" src="{% static 'logger/dygraph.css' %}" />
+        <style>
+            header, footer { padding: 1em; color: white; background-color: black; clear: left; text-align: center; }
+            footer { padding: 1em; color: yellow;       background-color: red; clear: left; text-align: center; }
+            nav { float: left; max-width: 160px; margin: 0;     padding: 1em; }
+            nav ul { list-style-type: none; padding: 0;         }                          
+            nav ul a { text-decoration: none; }
+            article { margin-left: 170px; border-left: 1px solid gray; padding: 1em; overflow: hidden; }
+            div.rot_image {float: left; width: 80%; text-align: center; background-color: green;}
+            div.snapshot {clear: both; text-align: center; background-color: blue; color: white;}
+            div.rot_list {float: right; width: 20%; text-align: center; background-color: yellow;}
+            graphdiv .dygraph-legend { width: 100px; background-color: transparent !important; left: 40px !important;}
+        </style>
+    </head>
+
+    <body>
+
+        <header>
+            <h1>Welcome to Ria's incubator!</h1>
+            <h3>{{batch.name}}</h3>
+            <h4 id="dht_data"></h4>
+            <h4 id="delta"></h4>                            
+        </header>
+
+        <nav>
+                <h4>Test Controls</h4>
+                <label for="rh_step">RH setting:</label>
+                <input type="range" name="rh_step" min="40" max="65" step="1" value="41" id="rh" onchange="rh_control('rh')">
+        </nav>
+
+                <article>
+                    <div id="graphdiv" style="height: 640px; width: 80%;"></div>
+
+                </article>
+                                        
+                <footer>
+                        <h2> !!! </h2>                   
+                </footer>
+
+                <script type="text/javascript">
+                    window.data = [];
+                    {% for rht in g_data %}                                                 
+                        window.data.push([new Date("{{rht.date_log|date:"D M d Y H:i:s e"}}"), {{rht.ktherm_temp}}, {{rht.rh}}, {{rht.amb_temp}}, {{rht.inc_temp}}]);
+                    {% endfor %}
+                    window.g = new Dygraph(
+                    document.getElementById("graphdiv"), window.data,
+                    {
+                        legend: 'always',                                                                           
+                        //title: 'Temperature and Humidity',
+                        //drawPoints: true,
+                        //showRoller: true,
+                        labels: ['Time', 'K Temperature', 'Humidity', 'Ambient', 'IC Temp'],
+                        ylabel: 'Humidity (%) Temperature (F)',                             
+                        xlabel: 'Time',
+                        labelsSeparateLines: true,
+                        //showRangeSelector: true
+                    }
+                    );
+                    window.setTimeout(timer, 1000)  
+                </script>
+
+        </body>
+</html>

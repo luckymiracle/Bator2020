@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+        <head>
+                <script type="text/javascript" src="{% static 'logger/dygraph.js' %}"></script>
+                <script type="text/javascript" src="{% static 'logger/logger.js' %}"></script>
+                <script type="text/javascript" src="{% static 'logger/jquery-3.1.1.min.js' %}"></script>
+                <link rel="stylesheet" src="{% static 'logger/dygraph.css' %}" />
+                <style>
+                        header, footer { padding: 1em; color: white; background-color: black; clear: left; text-align: center; }
+                        footer { padding: 1em; color: yellow;   background-color: red; clear: left; text-align: center; }
+                        nav { float: left; max-width: 160px; margin: 0;         padding: 1em; }
+                        nav ul { list-style-type: none; padding: 0;     }                          
+                        nav ul a { text-decoration: none; }
+                        article { margin-left: 170px; border-left: 1px solid gray; padding: 1em; overflow: hidden; }
+                        div.rot_image {float: left; width: 80%; text-align: center; background-color: green;}
+                        div.snapshot {clear: both; text-align: center; background-color: blue; color: white;}
+                        div.rot_list {float: right; width: 20%; text-align: center; background-color: yellow;}
+                        graphdiv .dygraph-legend { width: 100px; background-color: transparent !important; left: 40px !important;}
+
+                </style>
+        </head>
+
+        <body>
+        <!--body style="background-image:url({% static 'logger/pictures/rotation end2017_5_30_3_43.jpg' %})"-->
+
+            <header>
+                <h1>Bator2020</h1>
+                <h4 id="dht_data"> </h4>        
+            </header>
+                
+            <div>                       
+                <h1>Click to view past incubations</h1>
+                    {% for inc in incubations %}
+                        <a href="{{inc.id}}">{{inc.name}} {{inc.start_date}}</a> 
+                    {% endfor %}
+            </div>
+
+            <h1>Start a new batch!</h1>
+            <form action="{% url 'start' %}" method="post">
+            {% csrf_token %}
+            {{incubation}}
+            <input type="submit" value="Start" />
+            </form>
+
+            <h1>System test</h1>
+
+            <button type="button" onclick="on_off('rh')"> ON/OFF</button>
+
+            <ul>                                
+                <label for="rh_step">RH setting:</label>
+                <input type="number"  value="41" id="rh_step" onchange="rh_control('rh_step')">
+            </ul>
+
+            <ul>                                
+                <label for="temp_step">Temp setting:</label>
+                <input type="number" value="37.5" id="temp_step" onchange="temp_control('temp_step')">
+            </ul>
+
+            <article>
+                <div id="graphdiv" style="height: 640px; width: 80%;"></div>
+            </article>
+
+            <script type="text/javascript">
+                setTimeout(get_dht, 2000)                 
+            </script>
+                <script type="text/javascript">
+                    window.data = [];
+                    {% for rht in g_data %}                                                 
+                        window.data.push([new Date("{{rht.date_log|date:"D M d Y H:i:s e"}}"), {{rht.ktherm_temp}}, {{rht.rh}}, {{rht.amb_temp}}, {{rht.inc_temp}}]);
+                    {% endfor %}
+                    window.g = new Dygraph(
+                    document.getElementById("graphdiv"), window.data,
+                    {
+                        legend: 'always',                                                                           
+                        title: 'Temperature and Humidity',
+                        //drawPoints: true,
+                        showRoller: true,
+                        labels: ['Time', 'K Temperature', 'Humidity', 'Ambient', 'IC Temp'],
+                        ylabel: 'Humidity (%) Temperature (F)',                             
+                        xlabel: 'Time',
+                        labelsSeparateLines: true,
+                        //showRangeSelector: true
+                    }
+                    );
+                    window.setTimeout(timer, 1000)  
+                </script>            
+        </body>
+</html>
